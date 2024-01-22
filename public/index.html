@@ -1,0 +1,100 @@
+<!-- public/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spreadsheet Data</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #getDataButton {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #dataContainer {
+            margin-top: 20px;
+            max-width: 800px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 5px;
+            align-self: flex-end;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center;">
+        <button id="getDataButton">Get Data</button>
+    </div>
+    <div id="dataContainer"></div>
+
+    <script>
+        document.getElementById('getDataButton').addEventListener('click', fetchData);
+
+        function fetchData() {
+            // Make an AJAX request to your server
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/spreadsheet');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // Display the data on the page
+                        var dataContainer = document.getElementById('dataContainer');
+                        var responseData = JSON.parse(xhr.responseText);
+                        var html = '<ul>';
+                        responseData.forEach(function (item) {
+                            html += '<li>Orderno: ' + item.orderno + '<br>SKU: ' + item.sku + '<br>Date: ' + item.date +
+                                '<br>Personalization: ' + item.sku2 +
+                                '<br>Link: <img src="' + item.sku3 + '" alt="Image"></li>';
+                        });
+                        html += '</ul>';
+                        dataContainer.innerHTML = html;
+                    } else {
+                        // Display an error message on the page
+                        var dataContainer = document.getElementById('dataContainer');
+                        dataContainer.innerHTML = 'Error: ' + xhr.statusText;
+                    }
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
