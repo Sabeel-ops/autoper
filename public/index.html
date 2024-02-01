@@ -82,7 +82,10 @@
                         responseData.forEach(function (item) {
                             html += '<li>Orderno: ' + item.orderno + '<br>SKU: ' + item.sku + '<br>Date: ' + item.date +
                                 '<br>Personalization: ' + item.sku2 +
-                                '<br>Link: <img src="' + item.sku3 + '" alt="Image"></li>';
+                                '<br>Link: <img src="' + item.sku3 + '" alt="Image">';
+                                if (item.thumbnailD) {
+                                    html += '<img src="data:image/png;base64,' + item.thumbnailD + '" alt="Thumbnail"></li>';
+                                }
                         });
                         html += '</ul>';
                         dataContainer.innerHTML = html;
