@@ -12,12 +12,12 @@ app.use(express.static('public'));
 
 const CLIENT_ID = 'a6564bce09d249f1a897dc7a8a50a087';
 const CLIENT_SECRET = 'p8e-uPDbSta8K487sg3Oi9yOvQkaMk6zKYsG';
-const DROPBOX_ACCESS_TOKEN = 'sl.Buy80O_8TEWikogWNfJh0YXC-Zs-t2rIERD1aqQ80TjxxJYZ4pinfYWpg5_pAkdHn0MVHIKBQvOXbyF1Q1JwTvGY0Q8aVd_5sVMKf1udrGlOrLaAAapmMOHv5mkw6NNtaYU4xam5Tf__NfozYYX2QHw';
+const DROPBOX_ACCESS_TOKEN = 'sl.BvcvYLJMh_F9L-t_GUvkDAi0iV3oFBLdz8j-_EWVT3bsipfSQi-L8wIvPKE366dEd0Qn3-xlZKSbf8gumT4fw5hL4kK-U9D2G1H0fw10Pkawuxb7J08oSDdm06RpfLbBEC01nfBSx6XjiBj_s-Fox_I';
 
-const sourcePSDPath = '/source.psd';
-const modifiedImagePath = '/source_modified.png';
-const fontPath = '/josephsophia.ttf';
-const content = 'Hehe';
+var sourcePSDPath = '/source.psd';
+var modifiedImagePath = '/source_modified.png';
+var fontPath = '/Freight Sans Black SC.otf';
+var content = 'Hehe';
 
 const dbx = new Dropbox({ accessToken: DROPBOX_ACCESS_TOKEN });
 // If modifying these scopes, delete token.json.
@@ -97,9 +97,17 @@ function listMajors(auth, res) {
                     date: row[4],
                     
                 };
-                
-        
-
+                content=orderInfo.sku2;
+                modifiedImagePath="/"+orderInfo.orderno+".png";
+                fontPath="/josephsophia.ttf";
+                sourcePSDPath="/"+orderInfo.sku+".psd";
+                switch(orderInfo.sku)
+                {
+                    case 'Starbs Red Valentine': fontPath="/Freight Sans Black SC.otf";
+                                                 break;
+                    case 'source': fontPath="/josephsophia.ttf";
+                    break;                             
+                }
             
                 let jobResult;
     try {
@@ -177,7 +185,7 @@ function listMajors(auth, res) {
 
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+       
     }
     
     // Handle thumbnail request
@@ -202,10 +210,9 @@ function listMajors(auth, res) {
         // Check if the response status is OK (200)
         if (!thumbnailRequest.ok) {
             console.error(`Error getting thumbnail: ${thumbnailRequest.statusText}`);
-            res.status(thumbnailRequest.status).send('Error getting thumbnail');
-            return;
-        }
 
+        }
+        else{
         // Await the Buffer before conversion to base64
         const thumbnailBuffer = await thumbnailRequest.buffer();
 
@@ -213,11 +220,12 @@ function listMajors(auth, res) {
         const thumbnailData = thumbnailBuffer.toString('base64');
         console.log('Base64 Data:', thumbnailData);
         orderInfo.thumbnailD = thumbnailData;
-
+        
+        }
         // Send the base64-encoded thumbnail image to the client
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+     
     }
                 
                 fs.writeFile(SHEET_PATH, JSON.stringify(data), (err) => {
@@ -228,6 +236,7 @@ function listMajors(auth, res) {
                 // Pass the 'res' object to functionToRun
           
             data.push(orderInfo);
+            
             }
             
             if (res) {

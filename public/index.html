@@ -66,9 +66,9 @@
     <div id="dataContainer"></div>
 
     <script>
-        document.getElementById('getDataButton').addEventListener('click', fetchData);
-
-        function fetchData() {
+        document.getElementById('getDataButton').addEventListener('click', function () {
+            // Move the script inside the click event handler
+            // This ensures it only runs when the button is clicked
             // Make an AJAX request to your server
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '/spreadsheet');
@@ -86,6 +86,9 @@
                                 if (item.thumbnailD) {
                                     html += '<img src="data:image/png;base64,' + item.thumbnailD + '" alt="Thumbnail"></li>';
                                 }
+                                else{
+                                    html += '<p>Image Not Found</p>';
+                                }
                         });
                         html += '</ul>';
                         dataContainer.innerHTML = html;
@@ -97,7 +100,7 @@
                 }
             };
             xhr.send();
-        }
+        });
     </script>
 </body>
 </html>
